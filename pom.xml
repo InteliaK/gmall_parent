@@ -6,7 +6,11 @@
 
     <groupId>com.intelia.gmall</groupId>
     <artifactId>gmall_parent</artifactId>
+    <packaging>pom</packaging>
     <version>1.0-SNAPSHOT</version>
+    <modules>
+        <module>gmall0213_realtime</module>
+    </modules>
 
 
 </project>
