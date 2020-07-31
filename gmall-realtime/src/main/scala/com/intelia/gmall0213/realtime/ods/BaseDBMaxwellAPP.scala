@@ -16,7 +16,8 @@ import org.apache.spark.streaming.{Seconds, StreamingContext}
  * @mogified By:
  */
 object BaseDBMaxwellAPP {
-    def main(args: Array[String]): Unit = {
+
+        def main(args: Array[String]): Unit = {
         //消费kafka
         //
         //  偏移量管理？    精确一次消费？ kafka作为最后存储端 无法保证幂等性 只能做“至少一次消费”
@@ -46,14 +47,13 @@ object BaseDBMaxwellAPP {
             offsetRanges = rdd.asInstanceOf[HasOffsetRanges].offsetRanges
             rdd
         }
-
         // 1 提取数据 2 分topic
         val jsonObjDstream: DStream[JSONObject] = inputGetOffsetDstream.map { record =>
             val jsonString: String = record.value()
             val jsonObj: JSONObject = JSON.parseObject(jsonString)
             jsonObj
         }
-        jsonObjDstream.print(1000)
+
 
 
         jsonObjDstream.foreachRDD{rdd=>
@@ -65,7 +65,7 @@ object BaseDBMaxwellAPP {
                 val topicName = "ODS_" + tableName.toUpperCase
                 // val dataArr: JSONArray = jsonObj.getJSONArray("data")
                 val json: String = jsonObj.getString("data")
-                println(json)
+
                 if (json != null && json.length > 3) {
                     if ((tableName.equals("order_info") && optType.equals("insert"))
                       || (tableName.equals("order_detail") && optType.equals("insert"))
@@ -76,7 +76,6 @@ object BaseDBMaxwellAPP {
                       || (tableName.equals("base_category3"))
                       || (tableName.equals("spu_info"))
                     ) {
-                        println(json)
                         //发送到kafka主题
                         MyKafkaSink.send(topicName, json);
                     }
@@ -90,4 +89,5 @@ object BaseDBMaxwellAPP {
         ssc.awaitTermination()
 
     }
+}
 }

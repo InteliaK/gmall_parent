@@ -1,8 +1,5 @@
-package com.intelia.gmall0213.gmall0213publisher.servive;
+package com.intelia.gmall0213.publisher.servive;
 
-import org.springframework.stereotype.Service;
-
-import java.io.IOException;
 import java.util.Map;
 
 /**

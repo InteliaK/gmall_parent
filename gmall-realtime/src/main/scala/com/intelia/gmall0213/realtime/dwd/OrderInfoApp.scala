@@ -2,9 +2,10 @@ package com.intelia.gmall0213.realtime.dwd
 
 import java.lang
 
+import com.alibaba.fastjson.serializer.SerializeConfig
 import com.alibaba.fastjson.{JSON, JSONObject}
 import com.intelia.gmall0213.realtime.bean.{OrderInfo, UserState}
-import com.intelia.gmall0213.realtime.util.{MyKafkaUtil, OffsetManager, PhoenixUtil}
+import com.intelia.gmall0213.realtime.util.{MyKafkaSink, MyKafkaUtil, OffsetManager, PhoenixUtil}
 import org.apache.hadoop.conf.Configuration
 import org.apache.kafka.clients.consumer.ConsumerRecord
 import org.apache.kafka.common.TopicPartition
@@ -39,7 +40,7 @@ object OrderInfoApp {
         }else{
             recordInputDstream = MyKafkaUtil.getKafkaStream(topic,ssc, groupId )
         }
-
+        recordInputDstream.print(1000)
 
         //3   从流中获得本批次的 偏移量结束点（每批次执行一次）
         var offsetRanges: Array[OffsetRange]=null    //周期性储存了当前批次偏移量的变化状态，重要的是偏移量结束点
@@ -47,7 +48,7 @@ object OrderInfoApp {
             offsetRanges = rdd.asInstanceOf[HasOffsetRanges].offsetRanges
             rdd
         }
-        
+        inputGetOffsetDstream.print(1000)
         //TODO 数据提取
         val orderInfoDstream: DStream[OrderInfo] = inputGetOffsetDstream.map { record =>
             val jsonString: String = record.value()
@@ -148,9 +149,11 @@ object OrderInfoApp {
             rddWithProvince
         }
 
+        //需要  关联用户维度
+
         //写入操作
         //1存储到Phoenix中
-
+        orderInfoWithProvinceDstream.print(1000)
         orderInfoWithProvinceDstream.foreachRDD{rdd =>
             rdd.cache()
             val userStateRDD: RDD[UserState] = rdd.map(orderInfo =>UserState(orderInfo.user_id.toString,"1"))
@@ -166,8 +169,12 @@ object OrderInfoApp {
             rdd.foreachPartition{orderInfoItr =>
                 val orderInfoList : List[(OrderInfo,String)] = orderInfoItr.toList.map(orderInfo => (orderInfo,orderInfo.id.toString))
 
+                for((orderInfo,id) <- orderInfoList){
+                    MyKafkaSink.send("DWD_ORDER_INFO",id,JSON.toJSONString(orderInfo,new SerializeConfig(true)))
+                }
             }
             //4  提交偏移量
+            OffsetManager.saveOffset(topic,groupId,offsetRanges)
         }
 
         ssc.start()

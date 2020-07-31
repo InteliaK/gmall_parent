@@ -17,7 +17,7 @@ import org.apache.spark.streaming.kafka010.{HasOffsetRanges, OffsetRange}
  * @date 2020.7.28 5:31
  * @mogified By:
  */
-object DimBaseProvimceApp {
+object DimBaseProvinceApp {
     def main(args: Array[String]): Unit = {
         //1.  从ods层获取相应数据，  2.偏移量后置
         //2 数据转换  case  class

@@ -1,4 +1,4 @@
-package com.intelia.gmall0213.gmall0213publisher;
+package com.intelia.gmall0213.publisher;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

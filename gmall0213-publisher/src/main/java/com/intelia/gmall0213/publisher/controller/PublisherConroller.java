@@ -1,7 +1,7 @@
-package com.intelia.gmall0213.gmall0213publisher.controller;
+package com.intelia.gmall0213.publisher.controller;
 
 import com.alibaba.fastjson.JSON;
-import com.intelia.gmall0213.gmall0213publisher.servive.DauService;
+import com.intelia.gmall0213.publisher.servive.DauService;
 import org.apache.commons.lang3.time.DateUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;

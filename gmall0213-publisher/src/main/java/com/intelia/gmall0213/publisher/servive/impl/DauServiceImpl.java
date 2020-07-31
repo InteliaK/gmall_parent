@@ -1,12 +1,11 @@
-package com.intelia.gmall0213.gmall0213publisher.servive.impl;
+package com.intelia.gmall0213.publisher.servive.impl;
 
-import com.intelia.gmall0213.gmall0213publisher.servive.DauService;
+import com.intelia.gmall0213.publisher.servive.DauService;
 import io.searchbox.client.JestClient;
 import io.searchbox.core.Search;
 import io.searchbox.core.SearchResult;
 import io.searchbox.core.search.aggregation.TermsAggregation;
 import org.elasticsearch.index.query.MatchAllQueryBuilder;
-import org.elasticsearch.search.aggregations.AggregationBuilder;
 import org.elasticsearch.search.aggregations.AggregationBuilders;
 import org.elasticsearch.search.aggregations.bucket.terms.TermsBuilder;
 import org.elasticsearch.search.builder.SearchSourceBuilder;
@@ -17,8 +16,6 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import static java.sql.DriverManager.println;
 
 /**
  * @description TODO
